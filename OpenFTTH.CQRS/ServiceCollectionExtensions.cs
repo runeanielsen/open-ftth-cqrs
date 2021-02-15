@@ -28,7 +28,7 @@ namespace OpenFTTH.CQRS
 
             foreach (var handler in handlers)
             {
-                services.AddScoped(handler.GetInterfaces().First(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterface), handler);
+                services.AddSingleton(handler.GetInterfaces().First(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterface), handler);
             }
         }
     }
