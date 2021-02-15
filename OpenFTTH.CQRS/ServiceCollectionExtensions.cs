@@ -10,8 +10,8 @@ namespace OpenFTTH.CQRS
     {
         public static void AddCQRS(this IServiceCollection services, IEnumerable<Assembly> assemblies)
         {
-            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
-            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
+            services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
+            services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
 
             foreach (var assembly in assemblies)
             {
