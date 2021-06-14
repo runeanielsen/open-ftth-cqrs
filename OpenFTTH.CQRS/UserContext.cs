@@ -6,6 +6,7 @@ namespace OpenFTTH.CQRS
     {
         public string UserName { get; }
         public Guid WorkTaskId { get; }
+        public Guid EditingRouteNodeId { get; init; }
 
         public UserContext(string userName, Guid workTaskId)
         {
