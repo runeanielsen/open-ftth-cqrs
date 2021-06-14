@@ -31,16 +31,22 @@ namespace OpenFTTH.CQRS
                 if (baseCommand.CorrelationId == Guid.Empty)
                     _logger.LogError($"{ typeof(TCommand).Name } command has empty correlation id. Please make sure all initated commands has a correlation id set.");
 
+
+                string atNode = "";
+                if (baseCommand.UserContext != null && baseCommand.UserContext.EditingRouteNodeId != Guid.Empty)
+                    atNode = " from route node: " + baseCommand.UserContext.EditingRouteNodeId.ToString() + ",";
+
                 if (result.IsFailed && result.Errors != null)
                 {
                     foreach (var error in result.Errors)
                     {
-                        _logger.LogWarning($"{ typeof(TCommand).Name } command with id {baseCommand.CmdId}, correlation id: {baseCommand.CorrelationId}, invoked by user: '{baseCommand.UserContext?.UserName}', failed with message: {error.Message}");
+                        _logger.LogWarning($"{ typeof(TCommand).Name } command with id {baseCommand.CmdId}, correlation id: {baseCommand.CorrelationId}, invoked by user: '{baseCommand.UserContext?.UserName}',{atNode} failed with message: {error.Message}");
                     }
                 }
                 else
                 {
-                    _logger.LogInformation($"{ typeof(TCommand).Name } command with id {baseCommand.CmdId}, correlation id: {baseCommand.CorrelationId}, invoked by user: '{baseCommand.UserContext?.UserName}', was successfully processed.");
+
+                    _logger.LogInformation($"{ typeof(TCommand).Name } command with id {baseCommand.CmdId}, correlation id: {baseCommand.CorrelationId}, invoked by user: '{baseCommand.UserContext?.UserName}',{atNode} was successfully processed.");
                 }
 
                 // Store command in event store
