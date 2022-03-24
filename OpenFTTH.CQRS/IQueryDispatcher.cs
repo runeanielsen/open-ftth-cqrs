@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FluentResults;
 using System.Threading.Tasks;
 
 namespace OpenFTTH.CQRS
 {
     public interface IQueryDispatcher
     {
-        Task<TResult> HandleAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>;
+        Task<TResult> HandleAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult> where TResult : Result;
     }
 }

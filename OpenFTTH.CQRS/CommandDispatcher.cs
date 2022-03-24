@@ -19,12 +19,23 @@ namespace OpenFTTH.CQRS
             _eventStore = eventStore;
         }
 
-        public async Task<TResult> HandleAsync<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult>
+        public async Task<TResult> HandleAsync<TCommand, TResult>(TCommand command) where TCommand : ICommand<TResult> where TResult : Result
         {
             if (_serviceProvider.GetService(typeof(ICommandHandler<TCommand, TResult>)) is not ICommandHandler<TCommand, TResult> service)
                 throw new ApplicationException($"The Command Dispatcher cannot find command handler: {typeof(TCommand).Name} Notice that you can use the AddCQRS extension in OpenFTTH.CQRS to easily add command and query handlers.");
 
-            var cmdResult = await service.HandleAsync(command);
+            Result cmdResult;
+
+            try
+            {
+                cmdResult = await service.HandleAsync(command);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UNHANDLED_COMMAND_EXCEPTION: " + ex.Message, ex);
+                cmdResult = Result.Fail("UNHANDLED_COMMAND_EXCEPTION: " + ex.Message);
+            }
+
 
             if (command is BaseCommand baseCommand && cmdResult is Result result)
             {
@@ -57,7 +68,7 @@ namespace OpenFTTH.CQRS
                 }
             }
 
-            return cmdResult;
+            return (TResult)cmdResult;
         }
     }
 }
