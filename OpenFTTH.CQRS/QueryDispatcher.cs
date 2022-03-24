@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace OpenFTTH.CQRS
             this._logger = logger;
         }
 
-        public async Task<TResult> HandleAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult> where TResult : Result
+        public async Task<TResult> HandleAsync<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
         {
             var service = this._serviceProvider.GetService(typeof(IQueryHandler<TQuery, TResult>)) as IQueryHandler<TQuery, TResult>;
 
@@ -30,7 +29,7 @@ namespace OpenFTTH.CQRS
             catch (Exception ex)
             {
                 _logger.LogError("UNHANDLED_QUERY_EXCEPTION: " + ex.Message, ex);
-                return (TResult)Result.Fail("UNHANDLED_QUERY_EXCEPTION: " + ex.Message);
+                throw;
             }
         }
     }

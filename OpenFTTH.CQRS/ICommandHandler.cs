@@ -1,9 +1,8 @@
-﻿using FluentResults;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace OpenFTTH.CQRS
 {
-    public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult> where TResult : Result
+    public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
     {
         Task<TResult> HandleAsync(TCommand command);
     }
